@@ -12,7 +12,7 @@ tools required for web application development.
 - npm: 11.18.0
 - Git: 2.55.0.windows.1
 - PostgreSQL: 18.4
-- Visual Studio Code: [1.134.0]
+- Visual Studio Code: 1.134.0
 
 ## Tools Configured
 
