@@ -1,34 +1,8 @@
-# Codveda Technologies — Level 1 Task 1
+## Environment Versions
 
-## Development Environment Setup
-
-### Intern
-Md. Shahid Hossain
-
-### Position
-Full-Stack Development Intern
-
-### Company
-Codveda Technologies
-
----
-
-## 1. Development Tools
-
-The following development tools were installed and configured:
-
-- Node.js
-- npm
-- Git
-- GitHub
-- Visual Studio Code
-- PostgreSQL
-
----
-
-## 2. Node.js and npm
-
-Node.js was installed and verified using:
-
-```bash
-node --version
+- Node.js: v26.4.0
+- npm: 11.18.0
+- Git: 2.55.0.windows.1
+- PostgreSQL: 18.4
+- Visual Studio Code: [your VS Code version]
+- Operating System: Windows
