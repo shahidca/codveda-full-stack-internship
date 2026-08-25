@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+      <meta charset="UTF-8" />
+
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+      <meta name="description" content="Codveda Level 1 Task 3 - REST API Frontend" />
+
+      <title>User Management | Codveda Internship</title>
+
+      <link rel="stylesheet" href="./css/style.css" />
+</head>
+
+<body>
+
+      <header class="header">
+            <div class="container nav">
+                  <div class="logo">
+                        Codveda<span>API</span>
+                  </div>
+
+                  <div class="api-status">
+                        <span id="statusDot" class="status-dot offline"></span>
+                        <span id="statusText">Checking API...</span>
+                  </div>
+            </div>
+      </header>
+
+      <main>
+
+            <!-- Hero -->
+            <section class="hero">
+                  <div class="container">
+                        <p class="eyebrow">CODVEDA INTERNSHIP · LEVEL 1 · TASK 3</p>
+
+                        <h1>
+                              User Management
+                              <span>Dashboard</span>
+                        </h1>
+
+                        <p class="hero-text">
+                              A responsive frontend built with HTML, CSS and vanilla JavaScript
+                              connected to a Node.js REST API.
+                        </p>
+                  </div>
+            </section>
+
+            <!-- User Management -->
+            <section class="users-section">
+                  <div class="container">
+
+                        <div class="section-header">
+                              <div>
+                                    <p class="section-label">REST API DATA</p>
+                                    <h2>Users</h2>
+                              </div>
+
+                              <button id="refreshBtn" class="btn btn-secondary">
+                                    Refresh
+                              </button>
+                        </div>
+
+                        <!-- Loading -->
+                        <div id="loading" class="state-message hidden">
+                              Loading users...
+                        </div>
+
+                        <!-- Error -->
+                        <div id="errorMessage" class="error-message hidden"></div>
+
+                        <!-- Empty -->
+                        <div id="emptyState" class="state-message hidden">
+                              No users found.
+                        </div>
+
+                        <!-- User cards -->
+                        <div id="usersContainer" class="users-grid"></div>
+
+                  </div>
+            </section>
+
+      </main>
+
+      <footer class="footer">
+            <div class="container">
+                  <p>
+                        Built for Codveda Technologies Full-Stack Development Internship
+                  </p>
+
+                  <p>
+                        Level 1 — Task 3
+                  </p>
+            </div>
+      </footer>
+
+      <script src="./js/app.js"></script>
+
+</body>
+
+</html>
