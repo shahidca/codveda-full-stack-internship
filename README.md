@@ -1,12 +1,15 @@
 
 <div align="center">
 
-### 👨‍💻 Md. Shahid Hossain
+# 👨‍💻 Md. Shahid Hossain
 
-**Full Stack Web Developer | React | Next.js | TypeScript | Node.js | Express.js | PostgreSQL | MongoDB**
+### Full Stack Web Developer
+
+**React • Next.js • TypeScript • JavaScript • Node.js • Express.js • PostgreSQL • MongoDB**
 
 [![GitHub](https://img.shields.io/badge/GitHub-shahidca-181717?style=for-the-badge&logo=github)](https://github.com/shahidca)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Md.%20Shahid%20Hossain-0A66C2?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/md-shahid-hossain-41477a390/)
+[![Codveda](https://img.shields.io/badge/Codveda-Full%20Stack%20Internship-111827?style=for-the-badge)](https://codveda.com/)
 
 </div>
 
@@ -21,30 +24,33 @@
 | **Organization** | Codveda Technologies |
 | **Internship ID** | `CV/A1/87871` |
 | **Duration** | 24 August 2026 – 24 September 2026 |
-| **Repository** | [codveda-full-stack-internship](https://github.com/shahidca/codveda-full-stack-internship) |
 | **Status** | ✅ Completed |
+| **GitHub Repository** | [Codveda Full Stack Internship](https://github.com/shahidca/codveda-full-stack-internship) |
 
 ---
 
 ## 🎯 About This Repository
 
-This repository contains my completed work for the **Codveda Technologies Full Stack Development Internship**.
+This repository contains my completed projects and documentation for the **Codveda Technologies Full Stack Development Internship**.
 
-The internship journey progresses from development environment setup and REST API development to React, authentication, database integration, full-stack applications, real-time communication, and GraphQL.
+The internship journey covers development fundamentals, REST APIs, frontend development, React, authentication, database integration, full-stack application development, WebSockets, and GraphQL.
 
-### Main Focus
+The projects were built with a focus on:
 
 - Clean and maintainable code
-- RESTful API design
-- React component development
+- Full-stack application architecture
+- RESTful API development
+- React and modern frontend development
 - Authentication and authorization
-- JWT and bcrypt security
+- JWT-based security
+- Password hashing with bcrypt
 - PostgreSQL database integration
 - Input validation
 - Error handling
 - API testing
 - Real-time communication
 - GraphQL APIs
+- Database optimization
 - Git and GitHub workflow
 
 ---
@@ -55,25 +61,28 @@ The internship journey progresses from development environment setup and REST AP
 
 ## Task 1 — Development Environment Setup
 
-**Documentation:** `level-1/docs/task-1-environment-setup.md`
+**Documentation:** [`level-1/docs/task-1-environment-setup.md`](./level-1/docs/task-1-environment-setup.md)
 
-Configured a complete development environment for full-stack development.
+Configured and documented a complete development environment for full-stack development.
 
-### Tools Used
+### Tools & Environment
 
 - Node.js `v26.4.0`
 - npm `11.18.0`
 - Git `2.55.0.windows.1`
 - PostgreSQL `18.4`
 - Visual Studio Code
+- Windows Terminal / Command Prompt
+- GitHub
 
 ---
 
 ## Task 2 — Simple REST API
 
-**Project:** `level-1/task-2-rest-api`
+**Project:** [`level-1/task-2-rest-api`](./level-1/task-2-rest-api)  
+**Documentation:** [`level-1/docs/task-2-rest-api.md`](./level-1/docs/task-2-rest-api.md)
 
-Built a RESTful API using Node.js, Express, TypeScript, and PostgreSQL.
+Developed a RESTful User API using Node.js, Express.js, TypeScript, and PostgreSQL.
 
 ### Features
 
@@ -83,9 +92,11 @@ Built a RESTful API using Node.js, Express, TypeScript, and PostgreSQL.
 - Update users
 - Delete users
 - Request validation
-- Parameterized SQL
+- Parameterized SQL queries
 - Proper HTTP status codes
-- Error and 404 handling
+- Error handling
+- 404 handling
+- PostgreSQL integration
 - Postman / Thunder Client testing
 
 ### Technologies
@@ -96,19 +107,20 @@ Built a RESTful API using Node.js, Express, TypeScript, and PostgreSQL.
 
 ## Task 3 — Frontend HTML/CSS/JavaScript
 
-**Project:** `level-1/task-3-frontend`
+**Project:** [`level-1/task-3-frontend`](./level-1/task-3-frontend)  
+**Documentation:** [`level-1/docs/task-3-frontend.md`](./level-1/docs/task-3-frontend.md)
 
-Built a responsive frontend connected to the REST API.
+Created a responsive frontend connected to the REST API.
 
 ### Features
 
-- HTML5
-- CSS3
+- HTML5 structure
+- CSS3 styling
 - Responsive design
 - Vanilla JavaScript
 - Fetch API
 - Dynamic API data
-- CRUD interaction
+- CRUD interaction with backend
 
 ### Technologies
 
@@ -120,20 +132,20 @@ Built a responsive frontend connected to the REST API.
 
 ## Task 1 — React Frontend
 
-**Project:** `level-2/task-1-react-frontend`
+**Project:** [`level-2/task-1-react-frontend`](./level-2/task-1-react-frontend)
 
-Developed a component-based frontend application with React and Vite.
+Developed a component-based frontend application using React and Vite.
 
 ### Features
 
 - Functional components
 - Component-based architecture
 - State management
-- API calls
+- API integration
 - Loading states
-- Reusable UI
+- Reusable UI components
 - Responsive interface
-- TypeScript
+- TypeScript integration
 
 ### Technologies
 
@@ -143,20 +155,21 @@ Developed a component-based frontend application with React and Vite.
 
 ## Task 2 — Authentication & Authorization
 
-**Project:** `level-2/task-2-authentication`
+**Project:** [`level-2/task-2-authentication`](./level-2/task-2-authentication)
 
-Implemented secure authentication and authorization.
+Implemented a secure authentication and authorization system.
 
 ### Features
 
 - User registration
 - User login
-- bcrypt password hashing
+- Password hashing with bcrypt
 - JWT authentication
 - Protected routes
 - Authentication middleware
 - Authorization
 - Input validation
+- Secure authentication flow
 
 ### Technologies
 
@@ -166,16 +179,20 @@ Implemented secure authentication and authorization.
 
 ## Task 3 — Database Integration
 
-**Project:** `level-2/task-3-database`
+**Project:** [`level-2/task-3-database`](./level-2/task-3-database)
 
-Built a PostgreSQL product-management API with validation, constraints, indexes, and optimized queries.
+Built a PostgreSQL-backed product management API with validation, constraints, indexes, and query optimization.
 
 ### Features
 
-- Product CRUD
+- Product creation
+- Product listing
+- Product retrieval by ID
+- Product update
+- Product deletion
 - Zod validation
 - PostgreSQL constraints
-- Parameterized queries
+- Parameterized SQL queries
 - Database indexes
 - `EXPLAIN ANALYZE`
 - Query optimization
@@ -188,34 +205,64 @@ Built a PostgreSQL product-management API with validation, constraints, indexes,
 
 # 🟣 Level 3 — Advanced
 
-## Task 1 — Full Stack Application
+## Task 1 — Full-Stack Task Management Application
 
-**Project:** `level-3/task-1-full-stack`
+### 🚀 TaskFlow — Full-Stack Task Management Application
 
-Developed a complete full-stack task management application.
+**Level:** `Level 3 — Task 1`
 
-### Features
+**Frontend:**  
+https://codveda-taskflow.onrender.com
+
+**Backend API:**  
+https://codveda-taskflow-api.onrender.com
+
+**API Health:**  
+https://codveda-taskflow-api.onrender.com/api/health
+
+**GitHub:**  
+https://github.com/shahidca/codveda-full-stack-internship
+
+TaskFlow is a full-stack task management application developed as part of the Codveda Technologies Level 3 Advanced internship work.
+
+The project demonstrates the integration of a modern frontend, Express/TypeScript backend, PostgreSQL database, JWT authentication, protected routes, CRUD operations, production builds, and deployment.
+
+### Key Features
 
 - User authentication
-- JWT authorization
+- JWT-based authorization
 - Protected routes
-- Task CRUD
-- PostgreSQL database
+- Task creation
+- Task management
+- Task CRUD operations
+- PostgreSQL database integration
 - React frontend
-- Express/TypeScript backend
-- Frontend/backend integration
-- Production builds
-- Deployment-ready structure
+- Express.js backend
+- TypeScript
+- Frontend/backend API integration
+- Production build
+- Deployed frontend
+- Deployed backend API
+- API health endpoint
 
 ### Technologies
 
 `React` · `Vite` · `TypeScript` · `Node.js` · `Express.js` · `PostgreSQL` · `JWT`
 
+### 🌐 Live Project
+
+| Resource | Link |
+|---|---|
+| **Live Frontend** | https://codveda-taskflow.onrender.com |
+| **Backend API** | https://codveda-taskflow-api.onrender.com |
+| **API Health** | https://codveda-taskflow-api.onrender.com/api/health |
+| **GitHub Repository** | https://github.com/shahidca/codveda-full-stack-internship |
+
 ---
 
 ## Task 2 — WebSockets / Real-Time Communication
 
-**Project:** `level-3/task-2-websockets`
+**Project:** [`level-3/task-2-websockets`](./level-3/task-2-websockets)
 
 Developed a real-time communication system using Socket.io.
 
@@ -226,12 +273,20 @@ Developed a real-time communication system using Socket.io.
 - Private messaging
 - User-specific notifications
 - JWT socket authentication
-- Conversations
+- Conversation management
 - Message persistence
 - Notification persistence
 - Message history
 - Notification history
 - PostgreSQL integration
+- Real-time frontend updates
+
+### Database Concepts
+
+- Users
+- Conversations
+- Messages
+- Notifications
 
 ### Technologies
 
@@ -241,24 +296,25 @@ Developed a real-time communication system using Socket.io.
 
 ## Task 3 — GraphQL API Development
 
-**Project:** `level-3/task-3-graphql`
+**Project:** [`level-3/task-3-graphql`](./level-3/task-3-graphql)
 
-Built a GraphQL API with Apollo Server, Express, TypeScript, PostgreSQL, JWT, and bcrypt.
+Built a GraphQL API using Apollo Server, Express.js, TypeScript, PostgreSQL, JWT authentication, and bcrypt.
 
 ### Features
 
 - Apollo GraphQL Server
-- Express integration
+- Express.js integration
 - GraphQL queries
 - GraphQL mutations
-- User registration/login
+- User registration
+- User login
 - JWT authentication
 - bcrypt password hashing
 - Protected mutations
 - User/Post relationships
-- Post CRUD
+- Post CRUD operations
 - Pagination
-- Parameterized SQL
+- Parameterized SQL queries
 - PostgreSQL integration
 - Query optimization
 
@@ -268,18 +324,22 @@ Built a GraphQL API with Apollo Server, Express, TypeScript, PostgreSQL, JWT, an
 
 ---
 
-# 🏆 Featured Projects
+# 🏆 Featured Portfolio Projects
 
-The first two projects highlighted from my professional portfolio are:
+The following two projects are highlighted as my primary professional portfolio projects.
+
+---
 
 ## 1. 🏕️ GearUp — Rent Sports & Outdoor Gear Instantly
 
-A full-stack sports and outdoor equipment rental platform designed to make renting equipment simple and convenient.
+**GearUp** is a full-stack sports and outdoor equipment rental platform designed to make renting equipment simple and convenient.
 
 ### Highlights
 
 - Customer, Provider, and Admin roles
-- Gear browsing and filtering
+- Gear browsing
+- Gear filtering
+- Category and brand filtering
 - Date-based rental selection
 - Gear details
 - Rental/order management
@@ -300,7 +360,7 @@ A full-stack sports and outdoor equipment rental platform designed to make renti
 
 ## 2. 💼 Personal Portfolio Website
 
-A professional developer portfolio for presenting my skills, projects, resume, and contact information.
+A professional developer portfolio created to present my skills, projects, resume, and contact information.
 
 ### Highlights
 
@@ -322,20 +382,25 @@ A professional developer portfolio for presenting my skills, projects, resume, a
 
 # 🛠️ Technology Stack
 
-### Frontend
+## Frontend
+
 `React` · `Next.js` · `TypeScript` · `JavaScript` · `HTML5` · `CSS3` · `Tailwind CSS` · `Vite` · `Fetch API`
 
-### Backend
+## Backend
+
 `Node.js` · `Express.js` · `TypeScript` · `REST API` · `GraphQL` · `Apollo Server` · `Socket.io`
 
-### Database
+## Database
+
 `PostgreSQL` · `SQL` · `Database Relationships` · `Indexing` · `Query Optimization` · `Parameterized Queries`
 
-### Authentication & Security
+## Authentication & Security
+
 `JWT` · `bcrypt` · `Authentication Middleware` · `Protected Routes` · `Authorization` · `Zod`
 
-### Tools
-`Git` · `GitHub` · `VS Code` · `Postman` · `Thunder Client` · `npm`
+## Development Tools
+
+`Git` · `GitHub` · `Visual Studio Code` · `Postman` · `Thunder Client` · `npm`
 
 ---
 
@@ -349,6 +414,7 @@ codveda-full-stack-internship/
 │   │   ├── task-1-environment-setup.md
 │   │   ├── task-2-rest-api.md
 │   │   └── task-3-frontend.md
+│   │
 │   ├── task-2-rest-api/
 │   └── task-3-frontend/
 │
