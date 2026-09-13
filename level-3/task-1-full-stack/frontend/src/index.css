@@ -4,16 +4,21 @@
 
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f4f7fb;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background-color: #f4f7fb;
   color: #172033;
 }
 
 button,
-input {
+input,
+textarea,
+select {
   font: inherit;
 }
 
+/* ==========================================================================
+   AUTHENTICATION STYLES (Login / Register)
+   ========================================================================== */
 .auth-container {
   min-height: 100vh;
   display: flex;
@@ -35,12 +40,13 @@ input {
   margin: 0;
   text-align: center;
   font-size: 32px;
+  color: #1e293b;
 }
 
 .subtitle {
   margin: 8px 0 28px;
   text-align: center;
-  color: #667085;
+  color: #64748b;
 }
 
 .form-group {
@@ -51,21 +57,32 @@ input {
   display: block;
   margin-bottom: 7px;
   font-weight: 600;
+  font-size: 14px;
+  color: #334155;
 }
 
-.form-group input {
+.form-group input,
+.form-group textarea,
+.form-group select {
   width: 100%;
   padding: 12px 14px;
-  border: 1px solid #d0d5dd;
+  border: 1px solid #cbd5e1;
   border-radius: 8px;
   outline: none;
+  background: #fff;
+  color: #1e293b;
+  transition: border-color 0.2s;
 }
 
-.form-group input:focus {
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
   border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-.auth-card form > button {
+.auth-card button[type="submit"],
+.task-form button[type="submit"] {
   width: 100%;
   padding: 13px;
   border: none;
@@ -74,25 +91,35 @@ input {
   color: white;
   font-weight: 600;
   cursor: pointer;
+  transition: background 0.2s;
 }
 
-.auth-card form > button:disabled {
+.auth-card button[type="submit"]:hover,
+.task-form button[type="submit"]:hover {
+  background: #1d4ed8;
+}
+
+.auth-card button:disabled,
+button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
 .message {
   margin-top: 18px;
-  padding: 10px;
+  padding: 12px;
   border-radius: 8px;
-  background: #eef4ff;
+  background: #eef2ff;
+  color: #3730a3;
   text-align: center;
+  font-size: 14px;
 }
 
 .switch-mode {
   margin-top: 22px;
   text-align: center;
-  color: #667085;
+  color: #64748b;
+  font-size: 14px;
 }
 
 .link-button {
@@ -101,26 +128,190 @@ input {
   color: #2563eb;
   cursor: pointer;
   font-weight: 600;
+  padding: 0;
 }
 
-.user-info {
-  margin: 24px 0;
-  padding: 18px;
-  border-radius: 10px;
-  background: #f4f7fb;
+.link-button:hover {
+  text-decoration: underline;
 }
 
-.user-info p {
-  margin: 10px 0;
+/* ==========================================================================
+   DASHBOARD STYLES
+   ========================================================================== */
+.dashboard-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 32px 16px;
 }
 
-.auth-card > button {
-  width: 100%;
-  padding: 13px;
+.dashboard-card {
+  background: white;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: 26px;
+  color: #0f172a;
+}
+
+.dashboard-header button {
+  padding: 8px 16px;
   border: none;
   border-radius: 8px;
-  background: #dc2626;
+  background: #ef4444;
   color: white;
   font-weight: 600;
   cursor: pointer;
+}
+
+.dashboard-header button:hover {
+  background: #dc2626;
+}
+
+/* User Info Box */
+.user-info {
+  background: #f8fafc;
+  padding: 16px 20px;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  border: 1px solid #f1f5f9;
+}
+
+.user-info p {
+  margin: 6px 0;
+  color: #475569;
+  font-size: 14px;
+}
+
+/* Admin Section */
+.admin-section {
+  margin-bottom: 24px;
+}
+
+.admin-section button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  background: #7c3aed;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-section button:hover {
+  background: #6d28d9;
+}
+
+/* Task Sections */
+.task-section {
+  margin-top: 32px;
+}
+
+.task-section h2 {
+  font-size: 18px;
+  color: #1e293b;
+  margin-bottom: 16px;
+}
+
+.task-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.task-list-header button {
+  padding: 6px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: white;
+  color: #475569;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.task-list-header button:hover {
+  background: #f1f5f9;
+}
+
+/* Task Cards */
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.task-card {
+  border: 1px solid #e2e8f0;
+  padding: 20px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.task-card h3 {
+  margin: 0 0 6px 0;
+  font-size: 16px;
+  color: #0f172a;
+}
+
+.task-card p {
+  margin: 0 0 14px 0;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.task-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.task-actions select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-size: 13px;
+  background: #fff;
+}
+
+.task-actions button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.task-actions button:first-of-type {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.task-actions button:first-of-type:hover {
+  background: #c7d2fe;
+}
+
+.task-actions button:last-of-type {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.task-actions button:last-of-type:hover {
+  background: #fecaca;
 }
