@@ -3,10 +3,7 @@ import type { FormEvent } from "react";
 
 import { loginUser, registerUser } from "./api/auth";
 
-import {
-  getAdminDashboard,
-  getCurrentUser,
-} from "./api/user";
+import { getAdminDashboard, getCurrentUser } from "./api/user";
 
 import {
   createTask,
@@ -17,7 +14,12 @@ import {
   type TaskStatus,
 } from "./api/task";
 
+/* ============================================================
+   Types
+   ============================================================ */
+
 type Mode = "login" | "register";
+type MessageType = "success" | "error" | "info";
 
 type User = {
   id: number;
@@ -26,75 +28,226 @@ type User = {
   role: string;
 };
 
+const STATUS_OPTIONS: { value: TaskStatus; label: string }[] = [
+  { value: "PENDING", label: "Pending" },
+  { value: "IN_PROGRESS", label: "In Progress" },
+  { value: "COMPLETED", label: "Completed" },
+];
+
+const STATUS_LABELS: Record<TaskStatus, string> = {
+  PENDING: "Pending",
+  IN_PROGRESS: "In Progress",
+  COMPLETED: "Completed",
+};
+
+/* ============================================================
+   Icons
+   ============================================================ */
+
+function EyeIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="20"
+      height="20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+
+function EyeOffIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="20"
+      height="20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M9.9 4.24A9.1 9.1 0 0 1 12 4c6.4 0 10 7 10 7a18.5 18.5 0 0 1-2.16 3.19" />
+      <path d="M6.61 6.61A18.5 18.5 0 0 0 2 11s3.6 7 10 7a9.1 9.1 0 0 0 4.24-1" />
+      <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24" />
+      <line x1="3" y1="3" x2="21" y2="21" />
+    </svg>
+  );
+}
+
+function LogoIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="26"
+      height="26"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="m5 13 4 4L19 7" />
+    </svg>
+  );
+}
+
+function SparkleIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="14"
+      height="14"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M12 2 14 9l7 2-7 2-2 7-2-7-7-2 7-2 2-7Z" />
+    </svg>
+  );
+}
+
+/* ============================================================
+   Animated Background
+   ============================================================ */
+
+function AnimatedBackground() {
+  return (
+    <div className="bg-orbs" aria-hidden="true">
+      <span className="orb orb-1" />
+      <span className="orb orb-2" />
+      <span className="orb orb-3" />
+      <span className="orb orb-4" />
+    </div>
+  );
+}
+
+/* ============================================================
+   Password Field
+   ============================================================ */
+
+type PasswordFieldProps = {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  autoComplete?: string;
+  minLength?: number;
+};
+
+function PasswordField({
+  id,
+  label,
+  value,
+  onChange,
+  placeholder,
+  autoComplete,
+  minLength,
+}: PasswordFieldProps) {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <div className="form-group">
+      <label htmlFor={id}>{label}</label>
+
+      <div className="input-with-icon">
+        <input
+          id={id}
+          type={visible ? "text" : "password"}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          placeholder={placeholder}
+          autoComplete={autoComplete}
+          minLength={minLength}
+          required
+        />
+
+        <button
+          type="button"
+          className="password-toggle"
+          onClick={() => setVisible((current) => !current)}
+          aria-label={visible ? "Hide password" : "Show password"}
+          title={visible ? "Hide password" : "Show password"}
+        >
+          {visible ? <EyeOffIcon /> : <EyeIcon />}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   App
+   ============================================================ */
+
 function App() {
-  // ======================================================
-  // Authentication State
-  // ======================================================
+  /* ---------------- Auth state ---------------- */
 
   const [mode, setMode] = useState<Mode>("login");
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
 
   const [user, setUser] = useState<User | null>(null);
 
-  // ======================================================
-  // General State
-  // ======================================================
+  /* ---------------- General state ---------------- */
 
   const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState<MessageType>("info");
   const [loading, setLoading] = useState(false);
 
-  // ======================================================
-  // Admin State
-  // ======================================================
+  const notify = (text: string, type: MessageType = "info") => {
+    setMessage(text);
+    setMessageType(type);
+  };
+
+  const clearMessage = () => setMessage("");
+
+  /* ---------------- Admin state ---------------- */
 
   const [adminLoading, setAdminLoading] = useState(false);
 
-  // ======================================================
-  // Task State
-  // ======================================================
+  /* ---------------- Task state ---------------- */
 
   const [tasks, setTasks] = useState<Task[]>([]);
   const [tasksLoading, setTasksLoading] = useState(false);
 
   const [taskTitle, setTaskTitle] = useState("");
-  const [taskDescription, setTaskDescription] =
-    useState("");
+  const [taskDescription, setTaskDescription] = useState("");
 
-  const [editingTaskId, setEditingTaskId] =
-    useState<number | null>(null);
+  const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
+  const [editingTitle, setEditingTitle] = useState("");
+  const [editingDescription, setEditingDescription] = useState("");
 
-  const [editingTitle, setEditingTitle] =
-    useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<TaskStatus | "ALL">("ALL");
 
-  const [editingDescription, setEditingDescription] =
-    useState("");
-
-  // ======================================================
-  // Restore User After Refresh
-  // ======================================================
+  /* ======================================================
+     Restore user
+     ====================================================== */
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
 
-    if (!token) {
-      return;
-    }
+    if (!token) return;
 
     const loadUser = async () => {
       try {
         const response = await getCurrentUser();
-
         setUser(response.data.user);
       } catch (error) {
-        console.error(
-          "Failed to restore user:",
-          error
-        );
-
+        console.error("Failed to restore user:", error);
         localStorage.removeItem("accessToken");
         setUser(null);
       }
@@ -103,211 +256,150 @@ function App() {
     loadUser();
   }, []);
 
-  // ======================================================
-  // Load Tasks
-  // ======================================================
+  /* ======================================================
+     Load tasks
+     ====================================================== */
 
   const loadTasks = async () => {
     setTasksLoading(true);
 
     try {
       const response = await getTasks();
-
-      // Backend returns:
-      // {
-      //   success: true,
-      //   data: [...]
-      // }
       setTasks(response.data);
     } catch (error) {
-      setMessage(
-        error instanceof Error
-          ? error.message
-          : "Failed to load tasks"
+      notify(
+        error instanceof Error ? error.message : "Failed to load tasks",
+        "error"
       );
     } finally {
       setTasksLoading(false);
     }
   };
 
-  // ======================================================
-  // Load Tasks After User Login
-  // ======================================================
-
   useEffect(() => {
-    if (!user) {
-      return;
-    }
-
+    if (!user) return;
     loadTasks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  // ======================================================
-  // Register / Login
-  // ======================================================
+  /* ======================================================
+     Register / Login
+     ====================================================== */
 
-  const handleSubmit = async (
-    event: FormEvent<HTMLFormElement>
-  ) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    setMessage("");
+    clearMessage();
     setLoading(true);
 
     try {
-      // --------------------------------------------------
-      // Register
-      // --------------------------------------------------
-
       if (mode === "register") {
-        const data = await registerUser(
-          name,
-          email,
-          password
-        );
-
-        setMessage(data.message);
+        const data = await registerUser(name, email, password);
+        notify(data.message, data.success ? "success" : "error");
 
         if (data.success) {
           setName("");
           setEmail("");
           setPassword("");
-
           setMode("login");
         }
-
         return;
       }
 
-      // --------------------------------------------------
-      // Login
-      // --------------------------------------------------
+      const data = await loginUser(email, password);
 
-      const data = await loginUser(
-        email,
-        password
-      );
+      if (data.success && data.data.accessToken) {
+        localStorage.setItem("accessToken", data.data.accessToken);
 
-      if (
-        data.success &&
-        data.data.accessToken
-      ) {
-        localStorage.setItem(
-          "accessToken",
-          data.data.accessToken
-        );
-
-        const currentUser =
-          await getCurrentUser();
+        const currentUser = await getCurrentUser();
 
         setUser(currentUser.data.user);
-
-        setMessage("Login successful.");
+        notify("Login successful. Welcome back!", "success");
 
         setEmail("");
         setPassword("");
       } else {
-        setMessage(data.message);
+        notify(data.message, "error");
       }
     } catch (error) {
-      setMessage(
-        error instanceof Error
-          ? error.message
-          : "Something went wrong"
+      notify(
+        error instanceof Error ? error.message : "Something went wrong",
+        "error"
       );
     } finally {
       setLoading(false);
     }
   };
 
-  // ======================================================
-  // Admin Dashboard
-  // ======================================================
+  /* ======================================================
+     Admin dashboard
+     ====================================================== */
 
   const handleAdminDashboard = async () => {
-    setMessage("");
+    clearMessage();
     setAdminLoading(true);
 
     try {
-      const response =
-        await getAdminDashboard();
-
-      setMessage(response.message);
+      const response = await getAdminDashboard();
+      notify(response.message, "success");
     } catch (error) {
-      setMessage(
-        error instanceof Error
-          ? error.message
-          : "Admin access denied"
+      notify(
+        error instanceof Error ? error.message : "Admin access denied",
+        "error"
       );
     } finally {
       setAdminLoading(false);
     }
   };
 
-  // ======================================================
-  // Create Task
-  // ======================================================
+  /* ======================================================
+     Create task
+     ====================================================== */
 
-  const handleCreateTask = async (
-    event: FormEvent<HTMLFormElement>
-  ) => {
+  const handleCreateTask = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!taskTitle.trim()) {
-      setMessage("Task title is required.");
+      notify("Task title is required.", "error");
       return;
     }
 
-    setMessage("");
+    clearMessage();
     setLoading(true);
 
     try {
       const response = await createTask({
         title: taskTitle.trim(),
-        description:
-          taskDescription.trim() || undefined,
+        description: taskDescription.trim() || undefined,
         status: "PENDING",
       });
 
-      // Backend returns the created task directly:
-      // data: result.rows[0]
-      setTasks((currentTasks) => [
-        response.data,
-        ...currentTasks,
-      ]);
+      setTasks((current) => [response.data, ...current]);
 
       setTaskTitle("");
       setTaskDescription("");
 
-      setMessage("Task created successfully.");
+      notify("Task created successfully.", "success");
     } catch (error) {
-      setMessage(
-        error instanceof Error
-          ? error.message
-          : "Failed to create task"
+      notify(
+        error instanceof Error ? error.message : "Failed to create task",
+        "error"
       );
     } finally {
       setLoading(false);
     }
   };
 
-  // ======================================================
-  // Start Editing Task
-  // ======================================================
+  /* ======================================================
+     Edit task
+     ====================================================== */
 
   const startEditingTask = (task: Task) => {
     setEditingTaskId(task.id);
     setEditingTitle(task.title);
-    setEditingDescription(
-      task.description ?? ""
-    );
-
-    setMessage("");
+    setEditingDescription(task.description ?? "");
+    clearMessage();
   };
-
-  // ======================================================
-  // Cancel Editing
-  // ======================================================
 
   const cancelEditing = () => {
     setEditingTaskId(null);
@@ -315,146 +407,99 @@ function App() {
     setEditingDescription("");
   };
 
-  // ======================================================
-  // Save Task Update
-  // ======================================================
-
-  const handleUpdateTask = async (
-    task: Task
-  ) => {
+  const handleUpdateTask = async (task: Task) => {
     if (!editingTitle.trim()) {
-      setMessage("Task title is required.");
+      notify("Task title is required.", "error");
       return;
     }
 
     setLoading(true);
-    setMessage("");
+    clearMessage();
 
     try {
-      const response = await updateTask(
-        task.id,
-        {
-          title: editingTitle.trim(),
-          description:
-            editingDescription.trim(),
-          status: task.status,
-        }
-      );
+      const response = await updateTask(task.id, {
+        title: editingTitle.trim(),
+        description: editingDescription.trim(),
+        status: task.status,
+      });
 
-      // Backend returns:
-      // data: result.rows[0]
-      setTasks((currentTasks) =>
-        currentTasks.map((currentTask) =>
-          currentTask.id === task.id
-            ? response.data
-            : currentTask
-        )
+      setTasks((current) =>
+        current.map((t) => (t.id === task.id ? response.data : t))
       );
 
       cancelEditing();
-
-      setMessage(
-        "Task updated successfully."
-      );
+      notify("Task updated successfully.", "success");
     } catch (error) {
-      setMessage(
-        error instanceof Error
-          ? error.message
-          : "Failed to update task"
+      notify(
+        error instanceof Error ? error.message : "Failed to update task",
+        "error"
       );
     } finally {
       setLoading(false);
     }
   };
 
-  // ======================================================
-  // Change Task Status
-  // ======================================================
+  /* ======================================================
+     Change status
+     ====================================================== */
 
-  const handleStatusChange = async (
-    task: Task,
-    status: TaskStatus
-  ) => {
+  const handleStatusChange = async (task: Task, status: TaskStatus) => {
     setLoading(true);
-    setMessage("");
+    clearMessage();
 
     try {
-      const response = await updateTask(
-        task.id,
-        {
-          status,
-        }
+      const response = await updateTask(task.id, { status });
+
+      setTasks((current) =>
+        current.map((t) => (t.id === task.id ? response.data : t))
       );
 
-      // Backend returns:
-      // data: result.rows[0]
-      setTasks((currentTasks) =>
-        currentTasks.map((currentTask) =>
-          currentTask.id === task.id
-            ? response.data
-            : currentTask
-        )
-      );
-
-      setMessage(
-        "Task status updated successfully."
-      );
+      notify("Task status updated successfully.", "success");
     } catch (error) {
-      setMessage(
+      notify(
         error instanceof Error
           ? error.message
-          : "Failed to update task status"
+          : "Failed to update task status",
+        "error"
       );
     } finally {
       setLoading(false);
     }
   };
 
-  // ======================================================
-  // Delete Task
-  // ======================================================
+  /* ======================================================
+     Delete task
+     ====================================================== */
 
-  const handleDeleteTask = async (
-    taskId: number
-  ) => {
-    const confirmed =
-      window.confirm(
-        "Are you sure you want to delete this task?"
-      );
+  const handleDeleteTask = async (taskId: number) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this task?"
+    );
 
-    if (!confirmed) {
-      return;
-    }
+    if (!confirmed) return;
 
     setLoading(true);
-    setMessage("");
+    clearMessage();
 
     try {
       await deleteTask(taskId);
 
-      setTasks((currentTasks) =>
-        currentTasks.filter(
-          (task) => task.id !== taskId
-        )
-      );
+      setTasks((current) => current.filter((t) => t.id !== taskId));
 
-      setMessage(
-        "Task deleted successfully."
-      );
+      notify("Task deleted successfully.", "success");
     } catch (error) {
-      setMessage(
-        error instanceof Error
-          ? error.message
-          : "Failed to delete task"
+      notify(
+        error instanceof Error ? error.message : "Failed to delete task",
+        "error"
       );
     } finally {
       setLoading(false);
     }
   };
 
-  // ======================================================
-  // Logout
-  // ======================================================
+  /* ======================================================
+     Logout
+     ====================================================== */
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
@@ -466,464 +511,488 @@ function App() {
     setEmail("");
     setPassword("");
 
-    setMessage(
-      "Logged out successfully."
-    );
+    cancelEditing();
+    setSearchQuery("");
+    setStatusFilter("ALL");
+
+    notify("Logged out successfully.", "info");
   };
 
-  // ======================================================
-  // Login / Register Screen
-  // ======================================================
+  /* ======================================================
+     Filtered tasks
+     ====================================================== */
+
+  const filteredTasks = tasks.filter((task) => {
+    const matchesStatus =
+      statusFilter === "ALL" || task.status === statusFilter;
+
+    const query = searchQuery.trim().toLowerCase();
+    const matchesSearch =
+      !query ||
+      task.title.toLowerCase().includes(query) ||
+      (task.description ?? "").toLowerCase().includes(query);
+
+    return matchesStatus && matchesSearch;
+  });
+
+  /* ======================================================
+     Login / Register Screen
+     ====================================================== */
 
   if (!user) {
     return (
-      <main className="auth-container">
-        <section className="auth-card">
-          <h1>TaskFlow</h1>
+      <>
+        <AnimatedBackground />
 
-          <p className="subtitle">
-            {mode === "login"
-              ? "Login to your account"
-              : "Create your TaskFlow account"}
-          </p>
+        <main className="auth-container">
+          <section className="auth-card">
+            <div className="brand-logo">
+              <LogoIcon />
+            </div>
 
-          <form onSubmit={handleSubmit}>
-            {mode === "register" && (
+            <h1>TaskFlow</h1>
+
+            <p className="subtitle">
+              {mode === "login"
+                ? "Welcome back — sign in to continue"
+                : "Create your account and start organizing"}
+            </p>
+
+            <form onSubmit={handleSubmit}>
+              {mode === "register" && (
+                <div className="form-group">
+                  <label htmlFor="name">Name</label>
+
+                  <input
+                    id="name"
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Enter your name"
+                    autoComplete="name"
+                    required
+                  />
+                </div>
+              )}
+
               <div className="form-group">
-                <label htmlFor="name">
-                  Name
-                </label>
+                <label htmlFor="email">Email</label>
 
                 <input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={(event) =>
-                    setName(
-                      event.target.value
-                    )
-                  }
-                  placeholder="Enter your name"
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  autoComplete="email"
                   required
                 />
               </div>
+
+              <PasswordField
+                id="password"
+                label="Password"
+                value={password}
+                onChange={setPassword}
+                placeholder="Enter your password"
+                autoComplete={
+                  mode === "login" ? "current-password" : "new-password"
+                }
+                minLength={6}
+              />
+
+              <button
+                type="submit"
+                className="primary-btn"
+                disabled={loading}
+              >
+                {loading
+                  ? "Please wait..."
+                  : mode === "login"
+                    ? "Login"
+                    : "Create Account"}
+              </button>
+            </form>
+
+            {message && (
+              <p
+                key={message}
+                className={`message-banner message-${messageType}`}
+                role="status"
+                aria-live="polite"
+              >
+                {message}
+              </p>
             )}
 
-            <div className="form-group">
-              <label htmlFor="email">
-                Email
-              </label>
-
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(event) =>
-                  setEmail(
-                    event.target.value
-                  )
-                }
-                placeholder="Enter your email"
-                required
-              />
+            <div className="switch-mode">
+              {mode === "login" ? (
+                <>
+                  <span>Don't have an account?</span>
+                  <button
+                    type="button"
+                    className="link-button"
+                    onClick={() => {
+                      setMode("register");
+                      clearMessage();
+                    }}
+                  >
+                    Register
+                  </button>
+                </>
+              ) : (
+                <>
+                  <span>Already have an account?</span>
+                  <button
+                    type="button"
+                    className="link-button"
+                    onClick={() => {
+                      setMode("login");
+                      clearMessage();
+                    }}
+                  >
+                    Login
+                  </button>
+                </>
+              )}
             </div>
+          </section>
+        </main>
+      </>
+    );
+  }
 
-            <div className="form-group" style={{ position: "relative" }}>
-              <label htmlFor="password">
-                Password
-              </label>
+  /* ======================================================
+     Dashboard
+     ====================================================== */
 
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(event) =>
-                    setPassword(
-                      event.target.value
-                    )
-                  }
-                  placeholder="Enter your password"
-                  required
-                  minLength={6}
-                  style={{ width: "100%", paddingRight: "40px" }}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  style={{
-                    position: "absolute",
-                    right: "10px",
-                    top: "32px",
-                    background: "transparent",
-                    border: "none",
-                    cursor: "pointer",
-                    fontSize: "14px",
-                  }}
-                >
-                  {showPassword ? "👁️‍🗨️" : "👁️"}
-                </button>
+  return (
+    <>
+      <AnimatedBackground />
+
+      <main className="dashboard-container">
+        <div className="dashboard-wrapper">
+          {/* ---------- Header ---------- */}
+          <header className="dashboard-header">
+            <div className="dashboard-header-left">
+              <div className="avatar" aria-hidden="true">
+                {user.name.charAt(0).toUpperCase()}
+              </div>
+
+              <div>
+                <span className="app-badge">
+                  <SparkleIcon /> TaskFlow
+                </span>
+
+                <h1>Welcome back, {user.name}</h1>
+
+                <p className="subtitle">
+                  Here's your workspace overview for today.
+                </p>
               </div>
             </div>
 
             <button
-              type="submit"
-              disabled={loading}
+              type="button"
+              className="logout-btn"
+              onClick={handleLogout}
             >
-              {loading
-                ? "Please wait..."
-                : mode === "login"
-                  ? "Login"
-                  : "Create Account"}
+              Logout
             </button>
-          </form>
+          </header>
 
+          {/* ---------- Message ---------- */}
           {message && (
-            <p className="message">
+            <p
+              key={message}
+              className={`message-banner message-${messageType}`}
+              role="status"
+              aria-live="polite"
+            >
               {message}
             </p>
           )}
 
-          <div className="switch-mode">
-            {mode === "login" ? (
-              <>
-                Don't have an account?{" "}
-
-                <button
-                  type="button"
-                  className="link-button"
-                  onClick={() => {
-                    setMode("register");
-                    setMessage("");
-                  }}
-                >
-                  Register
-                </button>
-              </>
-            ) : (
-              <>
-                Already have an account?{" "}
-
-                <button
-                  type="button"
-                  className="link-button"
-                  onClick={() => {
-                    setMode("login");
-                    setMessage("");
-                  }}
-                >
-                  Login
-                </button>
-              </>
-            )}
-          </div>
-        </section>
-      </main>
-    );
-  }
-
-  // ======================================================
-  // TaskFlow Dashboard
-  // ======================================================
-
-  return (
-    <main className="dashboard-container">
-      <section className="dashboard-card">
-        <div className="dashboard-header">
-          <div>
-            <h1>TaskFlow Dashboard</h1>
-
-            <p className="subtitle">
-              Welcome back, {user.name}
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={handleLogout}
-          >
-            Logout
-          </button>
-        </div>
-
-        {/* ==================================================
-            USER INFORMATION
-        ================================================== */}
-
-        <div className="user-info">
-          <p>
-            <strong>ID:</strong>{" "}
-            {user.id}
-          </p>
-
-          <p>
-            <strong>Name:</strong>{" "}
-            {user.name}
-          </p>
-
-          <p>
-            <strong>Email:</strong>{" "}
-            {user.email}
-          </p>
-
-          <p>
-            <strong>Role:</strong>{" "}
-            {user.role}
-          </p>
-        </div>
-
-        {/* ==================================================
-            ADMIN ACCESS
-        ================================================== */}
-
-        {user.role === "ADMIN" && (
-          <div className="admin-section">
-            <button
-              type="button"
-              onClick={
-                handleAdminDashboard
-              }
-              disabled={adminLoading}
-            >
-              {adminLoading
-                ? "Checking..."
-                : "Open Admin Dashboard"}
-            </button>
-          </div>
-        )}
-
-        {/* ==================================================
-            CREATE TASK
-        ================================================== */}
-
-        <section className="task-section">
-          <h2>Create New Task</h2>
-
-          <form
-            onSubmit={handleCreateTask}
-            className="task-form"
-          >
-            <div className="form-group">
-              <label htmlFor="task-title">
-                Title
-              </label>
-
-              <input
-                id="task-title"
-                type="text"
-                value={taskTitle}
-                onChange={(event) =>
-                  setTaskTitle(
-                    event.target.value
-                  )
-                }
-                placeholder="Enter task title"
-                required
-              />
+          {/* ---------- User Info ---------- */}
+          <section className="user-info-grid">
+            <div className="info-card">
+              <span className="info-label">ID</span>
+              <span className="info-value">{user.id}</span>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="task-description">
-                Description
-              </label>
-
-              <textarea
-                id="task-description"
-                value={taskDescription}
-                onChange={(event) =>
-                  setTaskDescription(
-                    event.target.value
-                  )
-                }
-                placeholder="Enter task description"
-                rows={4}
-              />
+            <div className="info-card">
+              <span className="info-label">Name</span>
+              <span className="info-value">{user.name}</span>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-            >
-              {loading
-                ? "Creating..."
-                : "Create Task"}
-            </button>
-          </form>
-        </section>
-
-        {/* ==================================================
-            MESSAGE
-        ================================================== */}
-
-        {message && (
-          <p className="message">
-            {message}
-          </p>
-        )}
-
-        {/* ==================================================
-            TASK LIST
-        ================================================== */}
-
-        <section className="task-section">
-          <div className="task-list-header">
-            <h2>My Tasks</h2>
-
-            <button
-              type="button"
-              onClick={loadTasks}
-              disabled={tasksLoading}
-            >
-              {tasksLoading
-                ? "Refreshing..."
-                : "Refresh"}
-            </button>
-          </div>
-
-          {tasksLoading ? (
-            <p>Loading tasks...</p>
-          ) : tasks.length === 0 ? (
-            <p>
-              No tasks found. Create your
-              first task above.
-            </p>
-          ) : (
-            <div className="task-list">
-              {tasks.map((task) => (
-                <article
-                  className="task-card"
-                  key={task.id}
-                >
-                  {editingTaskId ===
-                  task.id ? (
-                    <>
-                      <div className="form-group">
-                        <label>
-                          Title
-                        </label>
-
-                        <input
-                          type="text"
-                          value={editingTitle}
-                          onChange={(event) =>
-                            setEditingTitle(
-                              event.target.value
-                            )
-                          }
-                        />
-                      </div>
-
-                      <div className="form-group">
-                        <label>
-                          Description
-                        </label>
-
-                        <textarea
-                          value={
-                            editingDescription
-                          }
-                          onChange={(event) =>
-                            setEditingDescription(
-                              event.target.value
-                            )
-                          }
-                          rows={3}
-                        />
-                      </div>
-
-                      <div className="task-actions">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleUpdateTask(
-                              task
-                            )
-                          }
-                          disabled={loading}
-                        >
-                          Save
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={
-                            cancelEditing
-                          }
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <h3>{task.title}</h3>
-
-                      <p>
-                        {task.description ||
-                          "No description"}
-                      </p>
-
-                      <p>
-                        <strong>Status:</strong>{" "}
-
-                        <select
-                          value={task.status}
-                          onChange={(event) =>
-                            handleStatusChange(
-                              task,
-                              event.target
-                                .value as TaskStatus
-                            )
-                          }
-                          disabled={loading}
-                        >
-                          <option value="PENDING">
-                            PENDING
-                          </option>
-
-                          <option value="IN_PROGRESS">
-                            IN PROGRESS
-                          </option>
-
-                          <option value="COMPLETED">
-                            COMPLETED
-                          </option>
-                        </select>
-                      </p>
-
-                      <div className="task-actions">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            startEditingTask(
-                              task
-                            )
-                          }
-                        >
-                          Edit
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleDeleteTask(
-                              task.id
-                            )
-                          }
-                          disabled={loading}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </article>
-              ))}
+            <div className="info-card">
+              <span className="info-label">Email</span>
+              <span className="info-value">{user.email}</span>
             </div>
+
+            <div className="info-card">
+              <span className="info-label">Role</span>
+              <span
+                className={`role-badge ${
+                  user.role === "ADMIN" ? "admin" : "user"
+                }`}
+              >
+                {user.role}
+              </span>
+            </div>
+          </section>
+
+          {user.role === "ADMIN" && (
+            <section className="admin-section">
+              <button
+                type="button"
+                className="admin-btn"
+                onClick={handleAdminDashboard}
+                disabled={adminLoading}
+              >
+                {adminLoading ? "Checking..." : "Open Admin Dashboard"}
+              </button>
+            </section>
           )}
-        </section>
-      </section>
-    </main>
+
+          {/* ---------- Dashboard Grid ---------- */}
+          <div className="dashboard-grid">
+            {/* ---------- Create Task ---------- */}
+            <section className="card">
+              <h2>Create New Task</h2>
+
+              <form onSubmit={handleCreateTask}>
+                <div className="form-group">
+                  <label htmlFor="task-title">Title</label>
+
+                  <input
+                    id="task-title"
+                    type="text"
+                    value={taskTitle}
+                    onChange={(e) => setTaskTitle(e.target.value)}
+                    placeholder="e.g. Prepare the sprint report"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="task-description">Description</label>
+
+                  <textarea
+                    id="task-description"
+                    value={taskDescription}
+                    onChange={(e) => setTaskDescription(e.target.value)}
+                    placeholder="Add any details that will help you complete this task"
+                    rows={4}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="primary-btn"
+                  disabled={loading}
+                >
+                  {loading ? "Creating..." : "Create Task"}
+                </button>
+              </form>
+            </section>
+
+            {/* ---------- Task List ---------- */}
+            <section className="card">
+              <div className="task-list-header">
+                <h2>My Tasks</h2>
+
+                <button
+                  type="button"
+                  className="secondary-btn small"
+                  onClick={loadTasks}
+                  disabled={tasksLoading}
+                >
+                  {tasksLoading ? "Refreshing..." : "Refresh"}
+                </button>
+              </div>
+
+              <div className="task-toolbar">
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="Search tasks..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+
+                <div className="filter-chips">
+                  <button
+                    type="button"
+                    className={`chip ${
+                      statusFilter === "ALL" ? "active" : ""
+                    }`}
+                    onClick={() => setStatusFilter("ALL")}
+                  >
+                    All
+                  </button>
+
+                  {STATUS_OPTIONS.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      className={`chip ${
+                        statusFilter === option.value ? "active" : ""
+                      }`}
+                      onClick={() => setStatusFilter(option.value)}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+
+                <p className="task-count">
+                  {filteredTasks.length} of {tasks.length} task
+                  {tasks.length === 1 ? "" : "s"}
+                </p>
+              </div>
+
+              {tasksLoading ? (
+                <div className="skeleton-list">
+                  <div className="skeleton-card" />
+                  <div className="skeleton-card" />
+                  <div className="skeleton-card" />
+                </div>
+              ) : filteredTasks.length === 0 ? (
+                <div className="state-placeholder">
+                  {tasks.length === 0
+                    ? "No tasks found. Create your first task above."
+                    : "No tasks match your current filters."}
+                </div>
+              ) : (
+                <div className="task-list">
+                  {filteredTasks.map((task) => (
+                    <article
+                      key={task.id}
+                      className={`task-card task-${task.status.toLowerCase()}`}
+                    >
+                      {editingTaskId === task.id ? (
+                        <>
+                          <div className="form-group">
+                            <label htmlFor={`edit-title-${task.id}`}>
+                              Title
+                            </label>
+
+                            <input
+                              id={`edit-title-${task.id}`}
+                              type="text"
+                              value={editingTitle}
+                              onChange={(e) =>
+                                setEditingTitle(e.target.value)
+                              }
+                            />
+                          </div>
+
+                          <div className="form-group">
+                            <label htmlFor={`edit-desc-${task.id}`}>
+                              Description
+                            </label>
+
+                            <textarea
+                              id={`edit-desc-${task.id}`}
+                              value={editingDescription}
+                              onChange={(e) =>
+                                setEditingDescription(e.target.value)
+                              }
+                              rows={3}
+                            />
+                          </div>
+
+                          <div className="task-buttons">
+                            <button
+                              type="button"
+                              className="primary-btn small"
+                              onClick={() => handleUpdateTask(task)}
+                              disabled={loading}
+                            >
+                              Save
+                            </button>
+
+                            <button
+                              type="button"
+                              className="secondary-btn small"
+                              onClick={cancelEditing}
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="task-card-top">
+                            <h3>{task.title}</h3>
+
+                            <span
+                              className={`status-badge ${task.status.toLowerCase()}`}
+                            >
+                              {STATUS_LABELS[task.status]}
+                            </span>
+                          </div>
+
+                          <p className="task-desc">
+                            {task.description || "No description provided."}
+                          </p>
+
+                          <div className="task-card-footer">
+                            <label className="status-changer">
+                              <span>Status</span>
+
+                              <select
+                                value={task.status}
+                                onChange={(e) =>
+                                  handleStatusChange(
+                                    task,
+                                    e.target.value as TaskStatus
+                                  )
+                                }
+                                disabled={loading}
+                              >
+                                {STATUS_OPTIONS.map((option) => (
+                                  <option
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.label}
+                                  </option>
+                                ))}
+                              </select>
+                            </label>
+
+                            <div className="task-buttons">
+                              <button
+                                type="button"
+                                className="icon-btn edit"
+                                onClick={() => startEditingTask(task)}
+                              >
+                                Edit
+                              </button>
+
+                              <button
+                                type="button"
+                                className="icon-btn delete"
+                                onClick={() => handleDeleteTask(task.id)}
+                                disabled={loading}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </article>
+                  ))}
+                </div>
+              )}
+            </section>
+          </div>
+        </div>
+      </main>
+    </>
   );
 }
 
