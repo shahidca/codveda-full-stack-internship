@@ -28,6 +28,16 @@ type User = {
   role: string;
 };
 
+/* Raw shape from backend — everything optional until we normalize */
+type RawUser = {
+  id?: number;
+  name?: string;
+  username?: string;
+  fullName?: string;
+  email?: string;
+  role?: string;
+};
+
 const STATUS_OPTIONS: { value: TaskStatus; label: string }[] = [
   { value: "PENDING", label: "Pending" },
   { value: "IN_PROGRESS", label: "In Progress" },
@@ -39,6 +49,67 @@ const STATUS_LABELS: Record<TaskStatus, string> = {
   IN_PROGRESS: "In Progress",
   COMPLETED: "Completed",
 };
+
+/* ============================================================
+   Normalize user coming from the backend
+   Makes sure name / email / role always exist
+   ============================================================ */
+
+function normalizeUser(raw: RawUser | undefined | null): User {
+  const safe = raw ?? {};
+
+  const email = safe.email ?? "";
+  const derivedName =
+    safe.name ??
+    safe.username ??
+    safe.fullName ??
+    (email ? email.split("@")[0] : "User");
+
+  return {
+    id: safe.id ?? 0,
+    name: derivedName || "User",
+    email: email || "—",
+    role: safe.role ?? "USER",
+  };
+}
+
+/* ============================================================
+   Safely extract the user object from any API response shape.
+   Works for: { data: { user } } | { data } | { user } | user
+   ============================================================ */
+
+function extractUser(response: unknown): RawUser | null {
+  if (!response || typeof response !== "object") return null;
+
+  const root = response as Record<string, unknown>;
+
+  const data =
+    root.data && typeof root.data === "object"
+      ? (root.data as Record<string, unknown>)
+      : undefined;
+
+  const fromDataUser =
+    data && data.user && typeof data.user === "object"
+      ? (data.user as RawUser)
+      : undefined;
+
+  const fromData =
+    data && ("email" in data || "name" in data || "id" in data)
+      ? (data as RawUser)
+      : undefined;
+
+  const fromRoot =
+    root.user && typeof root.user === "object"
+      ? (root.user as RawUser)
+      : undefined;
+
+  const fromRootItself =
+    "email" in root || "name" in root || "id" in root
+      ? (root as RawUser)
+      : undefined;
+
+  return fromDataUser ?? fromData ?? fromRoot ?? fromRootItself ?? null;
+}
 
 /* ============================================================
    Icons
@@ -234,7 +305,7 @@ function App() {
   const [statusFilter, setStatusFilter] = useState<TaskStatus | "ALL">("ALL");
 
   /* ======================================================
-     Restore user
+     Restore user on refresh
      ====================================================== */
 
   useEffect(() => {
@@ -245,7 +316,11 @@ function App() {
     const loadUser = async () => {
       try {
         const response = await getCurrentUser();
-        setUser(response.data.user);
+
+        // DEBUG — remove once everything works
+        console.log("GET_CURRENT_USER (restore) =>", response);
+
+        setUser(normalizeUser(extractUser(response)));
       } catch (error) {
         console.error("Failed to restore user:", error);
         localStorage.removeItem("accessToken");
@@ -313,7 +388,10 @@ function App() {
 
         const currentUser = await getCurrentUser();
 
-        setUser(currentUser.data.user);
+        // DEBUG — remove once everything works
+        console.log("GET_CURRENT_USER (login) =>", currentUser);
+
+        setUser(normalizeUser(extractUser(currentUser)));
         notify("Login successful. Welcome back!", "success");
 
         setEmail("");
@@ -663,8 +741,12 @@ function App() {
   }
 
   /* ======================================================
-     Dashboard
+     Dashboard  (user is guaranteed non-null here)
      ====================================================== */
+
+  const initial = (user.name || user.email || "?")
+    .charAt(0)
+    .toUpperCase();
 
   return (
     <>
@@ -676,7 +758,7 @@ function App() {
           <header className="dashboard-header">
             <div className="dashboard-header-left">
               <div className="avatar" aria-hidden="true">
-                {user.name.charAt(0).toUpperCase()}
+                {initial}
               </div>
 
               <div>
@@ -684,7 +766,7 @@ function App() {
                   <SparkleIcon /> TaskFlow
                 </span>
 
-                <h1>Welcome back, {user.name}</h1>
+                <h1>Welcome back, {user.name || user.email || "User"}</h1>
 
                 <p className="subtitle">
                   Here's your workspace overview for today.
@@ -722,12 +804,12 @@ function App() {
 
             <div className="info-card">
               <span className="info-label">Name</span>
-              <span className="info-value">{user.name}</span>
+              <span className="info-value">{user.name || "—"}</span>
             </div>
 
             <div className="info-card">
               <span className="info-label">Email</span>
-              <span className="info-value">{user.email}</span>
+              <span className="info-value">{user.email || "—"}</span>
             </div>
 
             <div className="info-card">
@@ -737,7 +819,7 @@ function App() {
                   user.role === "ADMIN" ? "admin" : "user"
                 }`}
               >
-                {user.role}
+                {user.role || "USER"}
               </span>
             </div>
           </section>
